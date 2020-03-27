@@ -58,27 +58,12 @@ public class JavaCustomDebugger {
 			System.out.println("Debugger is attaching to: " + env.get("port") + " ...");
 			VirtualMachine vm = aconnector.attach(env);
 			try {
-			//System.out.println("Attached! Now listing threads ...");
-			//vm.allThreads().stream().forEach(System.out::println);
-
+			System.out.println("Attached to port " + env.get("port") + " ...");
+			
 			//2. Prepare class to be debugged so that we can add breakpoints etc...
 			ClassPrepareRequest cpr = vm.eventRequestManager().createClassPrepareRequest();
-			
 			cpr.addClassFilter(debugClass.getName());
 			cpr.setEnabled(true);
-
-			/*
-			 * ReferenceType refType = vm.allClasses().stream().filter(c ->
-			 * c.name().equals(debugClass.getName())) .findFirst().orElseThrow(() -> new
-			 * RuntimeException("unable to locate locate class HelloWorld"));
-			 * 
-			 * Field field = refType.fieldByName("welcome"); cpr.addClassFilter(refType);
-			 * vm.eventRequestManager().createModificationWatchpointRequest(field).
-			 * setEnabled(true);
-			 */
-			 
-			
-
 			vm.resume();
 			
 			// process events
@@ -89,6 +74,7 @@ public class JavaCustomDebugger {
 		        if (event instanceof VMDeathEvent
 		            || event instanceof VMDisconnectEvent) {
 		        	System.out.println("VM being debugged is terminated or finished execution.");
+		        	System.out.println("Debugger exiting.");
 		          // exit
 		          return;
 		        } else if (event instanceof ClassPrepareEvent) {
@@ -115,17 +101,14 @@ public class JavaCustomDebugger {
 		        } else if (event instanceof BreakpointEvent) {
                     event.request().disable();
                     displayVariables((BreakpointEvent) event);
-                    //enableStepRequest(vm, (BreakpointEvent)event);
                 }
 		      }
 		      eventSet.resume();
 		    }
-		    //System.out.println("Debugger done.");
-			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			System.out.println("Debugger done.");
+			
 		}
 
 	}
@@ -135,9 +118,8 @@ public class JavaCustomDebugger {
         if(stackFrame.location().toString().contains(debugClass.getName())) {
             Map<LocalVariable, Value> visibleVariables = stackFrame.getValues(stackFrame.visibleVariables());
             System.out.println("Variables at " +stackFrame.location().toString() +  " > ");
-            for (Map.Entry<LocalVariable, Value> entry : visibleVariables.entrySet()) {
-                System.out.println(entry.getKey().name() + " = " + entry.getValue());
-            }
+			visibleVariables.entrySet().stream()
+            							.forEach(e -> System.out.println(e.getKey().name() + " = " + e.getValue()));
         }
     }
 
