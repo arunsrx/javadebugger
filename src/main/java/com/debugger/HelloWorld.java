@@ -6,26 +6,28 @@ package com.debugger;
  *
  */
 public class HelloWorld {
-	public static String welcome = "Welcome to Its All Binary !";
+	public static String arunsrx = "hey it arun trying a few things !";
 
 	public static void main(String[] args) {
-		String helloWorld = "Hello World. ";
-
-		
-
-		String greeting = helloWorld + welcome;
-
+		String helloWorld = "Hello";
+		helloWorld += " ";
+		helloWorld += "World";
+		helloWorld += "!";
+ 
+		String welcome = "Welcome to Its All Binary !";
+ 
+		String greeting = helloWorld.toUpperCase() + welcome;
+ 
 		System.out.println("Hi Everyone, " + greeting);// Put a break point at this line.
 		
-		/*
-		 * try { Thread.sleep(10000); }catch(Exception ex) {
-		 * 
-		 * }
-		 */
-		for(int i=0;i<100000;i++) {
-			//System.out.println("al;djf;addsaf");
-		}
+		HelloWorld obj = new HelloWorld();
+		obj.printlines();
+ 
 
+	}
+	
+	public void printlines() {
+		System.out.println("this is a test being done by arun.");
 	}
 
 }
