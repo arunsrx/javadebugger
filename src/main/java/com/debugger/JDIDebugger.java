@@ -1,18 +1,18 @@
 package com.debugger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
-import com.sun.jdi.AbsentInformationException;
+import com.debugger.requests.requestor.BreakPointRequestor;
+import com.debugger.requests.requestor.ClassPrepareRequestor;
 import com.sun.jdi.Bootstrap;
 import com.sun.jdi.ClassType;
-import com.sun.jdi.Field;
-import com.sun.jdi.IncompatibleThreadStateException;
-import com.sun.jdi.LocalVariable;
 import com.sun.jdi.Location;
-import com.sun.jdi.ReferenceType;
-import com.sun.jdi.StackFrame;
-import com.sun.jdi.Value;
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.connect.AttachingConnector;
 import com.sun.jdi.connect.Connector;
@@ -21,24 +21,21 @@ import com.sun.jdi.event.ClassPrepareEvent;
 import com.sun.jdi.event.Event;
 import com.sun.jdi.event.EventQueue;
 import com.sun.jdi.event.EventSet;
-import com.sun.jdi.event.LocatableEvent;
 import com.sun.jdi.event.MethodEntryEvent;
-import com.sun.jdi.event.ModificationWatchpointEvent;
 import com.sun.jdi.event.StepEvent;
 import com.sun.jdi.event.VMDeathEvent;
 import com.sun.jdi.event.VMDisconnectEvent;
 import com.sun.jdi.request.BreakpointRequest;
-import com.sun.jdi.request.ClassPrepareRequest;
-import com.sun.jdi.request.MethodEntryRequest;
 import com.sun.jdi.request.StepRequest;
 
 /**
  * An attaching custom debugger which uses the java debug interface APIs
+ * Debugger driver code.
  * 
  * @author arun
  *
  */
-public class JavaCustomDebugger {
+public class JDIDebugger {
 
     private static Class debugClass = HelloWorld.class;
 
@@ -65,24 +62,33 @@ public class JavaCustomDebugger {
             System.out.println("Attached to port " + env.get("port") + " ...");
 
             // 2. Prepare class to be debugged so that we can add breakpoints etc...
-
-            ClassPrepareRequest cpr = vm.eventRequestManager().createClassPrepareRequest();
-            cpr.addClassFilter(debugClass.getName());
-            cpr.setEnabled(true);
-
-            Location location1 = vm.classesByName(debugClass.getName()).get(0).locationsOfLine(15).get(0);
-            BreakpointRequest bpReq1 = vm.eventRequestManager().createBreakpointRequest(location1);
-            bpReq1.enable();
-
-            /*
-             * List<ReferenceType> list = vm.allClasses(); for (ReferenceType string : list)
-             * { System.out.println(string.name());
-             * if(string.name().equals(debugClass.getName())){
-             * //System.out.println("================================= FOUND ======= "
-             * +string.name()); } }
-             */
-
+            ClassPrepareRequestor cpr = new ClassPrepareRequestor();
+            cpr.eventRequest(vm);
             vm.resume();
+
+            Runnable runnable = () -> {
+                System.out.println("pausing for 10 seconds...");
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                    addBreakPoint(debugClass.getName(), 15, vm);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+            Thread t = new Thread(runnable);
+            t.start();
+
+            Runnable runnable1 = () -> {
+                System.out.println("pausing for 20 seconds...");
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                    addBreakPoint(debugClass.getName(), 21, vm);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+            Thread t1 = new Thread(runnable1);
+            t1.start();
 
             // process events
             EventQueue eventQueue = vm.eventQueue();
@@ -100,36 +106,41 @@ public class JavaCustomDebugger {
 
                         ClassType classType = (ClassType) classPrepEvent.referenceType();
                         // add breakpoint on loaded class @ specified location.
-                        Location location = classType.locationsOfLine(15).get(0);
-                        BreakpointRequest bpReq = vm.eventRequestManager().createBreakpointRequest(location);
-                        bpReq.enable();
+                        Iterator<Entry<String, List<Integer>>> itr = BreakPointRequestor.deferredBreakpoints.entrySet()
+                                .iterator();
+                        Map<String, List<Integer>> setbrMap = BreakPointRequestor.setBreakpoints;
+                        System.out.println(classType.name() + " ===========================");
+                        List<Integer> setLineList = setbrMap.getOrDefault(classType.name(), new ArrayList<Integer>());
+                        while (itr.hasNext()) {
+                            Entry<String, List<Integer>> entry = itr.next();
+                            if (entry.getKey().equals(classType.name())) {
+                                List<Integer> lineList = entry.getValue();
+                                Iterator<Integer> lineitr = lineList.iterator();
 
-                        ReferenceType refType1 = classPrepEvent.referenceType();
+                                while (lineitr.hasNext()) {
+                                    int lineno = lineitr.next();
+                                    Location location = classType.locationsOfLine(lineno).get(0);
+                                    BreakpointRequest bpReq = vm.eventRequestManager()
+                                            .createBreakpointRequest(location);
+                                    bpReq.enable();
+                                    lineitr.remove();
+                                    setLineList.add(lineno);
+                                }
+                                if (lineList.isEmpty()) {
+                                    itr.remove();
+                                }
+                                setbrMap.put(classType.name(), setLineList);
+                            }
+                        }
 
-                        Field field1 = refType1.fieldByName("arunsrx");
-                        vm.eventRequestManager().createModificationWatchpointRequest(field1).setEnabled(true);
-
-                        MethodEntryRequest methodRequest = vm.eventRequestManager().createMethodEntryRequest();
-                        // methodRequest.addClassExclusionFilter("sun.*");
-                        // methodRequest.addClassExclusionFilter("java.*");
-                        // methodRequest.addClassExclusionFilter("com.sun.*");
-                        // methodRequest.addClassExclusionFilter("com.sun.tools.jdi.*");
-
-                        methodRequest.addClassFilter("com.debugger.*");
-
-                        methodRequest.enable();
-                        // eventSet.resume();
-
-                    } else if (event instanceof ModificationWatchpointEvent) {
-                        ModificationWatchpointEvent modEvent = (ModificationWatchpointEvent) event;
-                        System.out.println("old=" + modEvent.valueCurrent());
-                        System.out.println("new=" + modEvent.valueToBe());
-                        System.out.println();
-                        // eventSet.resume();
                     } else if (event instanceof BreakpointEvent) {
                         System.out.println("=================== BreakPoint Event =================");
                         // event.request().disable();
-                        displayVariables((BreakpointEvent) event);
+                        BreakpointEvent brevent = (BreakpointEvent) event;
+                        int lineNum = ((BreakpointEvent) event).location().lineNumber();
+                        System.out.println("Hit breakpoint at line no = " + lineNum + " class name is "
+                                + brevent.thread().frame(0).location().toString());
+                        System.out.println(" location === " + brevent.location().toString());
 
                         StepRequest stepRequest = vm.eventRequestManager().createStepRequest(
                                 ((BreakpointEvent) event).thread(), StepRequest.STEP_LINE, StepRequest.STEP_OVER);
@@ -139,8 +150,6 @@ public class JavaCustomDebugger {
                         event.request().disable();
                         System.out.println("=================== StepEvent =================");
 
-                        displayVariables((StepEvent) event);
-                        // eventSet.resume();
                     } else if (event instanceof MethodEntryEvent) {
                         // System.out.println("================= Method Entry Event ==============");
                         String classname = ((MethodEntryEvent) event).method().declaringType().name();
@@ -148,11 +157,11 @@ public class JavaCustomDebugger {
                         int count = 0;
                         if (methodCountMap.containsKey(method)) {
                             count = methodCountMap.get(method);
+                            count++;
                         } else {
                             count = 1;
                         }
                         methodCountMap.put(method, count);
-                        // eventSet.resume();
                     }
                 }
                 eventSet.resume();
@@ -166,21 +175,12 @@ public class JavaCustomDebugger {
 
     }
 
-    /**
-     * 
-     * @param event
-     * @throws IncompatibleThreadStateException
-     * @throws AbsentInformationException
-     */
-    public static void displayVariables(LocatableEvent event)
-            throws IncompatibleThreadStateException, AbsentInformationException {
-        StackFrame stackFrame = event.thread().frame(0);
-        if (stackFrame.location().toString().contains(debugClass.getName())) {
-            Map<LocalVariable, Value> visibleVariables = stackFrame.getValues(stackFrame.visibleVariables());
-            System.out.println("Variables at " + stackFrame.location().toString() + " > ");
-            visibleVariables.entrySet().stream()
-                    .forEach(e -> System.out.println(e.getKey().name() + " = " + e.getValue()));
-        }
-    }
+    private static void addBreakPoint(String className, int lineno, VirtualMachine vm) {
 
+        BreakPointRequestor bpr = new BreakPointRequestor(className, lineno);
+        bpr.eventRequest(vm);
+        System.out.println("addBreakPoint method line " + lineno);
+        System.out.println("addBreakPoint method class " + className);
+
+    }
 }

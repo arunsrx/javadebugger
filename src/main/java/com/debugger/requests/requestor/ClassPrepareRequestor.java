@@ -15,18 +15,18 @@ import com.sun.jdi.request.ClassPrepareRequest;
  */
 public class ClassPrepareRequestor implements IJdiEventRequestor {
 
-	// exclude some default packages
-	private final static String[] EXCLUDE_LIST = { "sun.*", "com.sun.*" };
+    // exclude some default packages
+    private final static String[] EXCLUDE_LIST = { "sun.*", "com.sun.*" };
 
-	@Override
-	public void eventRequest(VirtualMachine vm) {
+    @Override
+    public void eventRequest(VirtualMachine vm) {
 
-		ClassPrepareRequest cpr = vm.eventRequestManager().createClassPrepareRequest();
+        ClassPrepareRequest cpr = vm.eventRequestManager().createClassPrepareRequest();
 
-		Arrays.asList(EXCLUDE_LIST).stream().forEach(m -> cpr.addClassExclusionFilter(m));
-		cpr.addClassFilter("com.debugger.*");
-		cpr.enable();
+        Arrays.asList(EXCLUDE_LIST).stream().forEach(m -> cpr.addClassExclusionFilter(m));
+        cpr.addClassFilter("com.debugger.*");
+        cpr.enable();
 
-	}
+    }
 
 }

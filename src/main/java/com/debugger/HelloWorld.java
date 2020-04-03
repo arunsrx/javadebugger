@@ -6,31 +6,30 @@ package com.debugger;
  *
  */
 public class HelloWorld {
-	public static String arunsrx = "hey it arun trying a few things !";
+    public static String arunsrx = "hey it arun trying a few things !";
 
-	public static void main(String[] args) {
-		HelloWorld obj = new HelloWorld();
-		while (true) {
-			String helloWorld = "Hello";
-			helloWorld += " ";
-			helloWorld += "World";
-			helloWorld += "!";
+    public static void main(String[] args) {
+        HelloWorld obj = new HelloWorld();
+        while (true) {
+            String helloWorld = "Hello";
+            helloWorld += " ";
+            helloWorld += "World";
+            helloWorld += "!";
 
-			String welcome = "Welcome to Its All Binary !";
+            String welcome = "Welcome to Its All Binary !";
 
-			String greeting = helloWorld.toUpperCase() + welcome;
+            String greeting = helloWorld.toUpperCase() + welcome;
 
-			//System.out.println("Hi Everyone, " + greeting);// Put a break point at this line.
+            // System.out.println("Hi Everyone, " + greeting);// Put a break point at this
+            // line.
 
-			
-			obj.printlines();
-		}
- 
+            obj.printlines();
+        }
 
-	}
-	
-	public void printlines() {
-		//System.out.println("this is a test being done by arun.");
-	}
+    }
+
+    public void printlines() {
+        // System.out.println("this is a test being done by arun.");
+    }
 
 }
