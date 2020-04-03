@@ -1,9 +1,9 @@
 # Java debugger using Java Debugging Interface (javadebugger)
 ## Java Platform Debugger Architecture (JDPA) Overview
 JDPA provides tools to developers to easily create debugger applications.  JDPA consists of three layers.
-	1. JVM TI - defines services that a JVM provides for debugging.
-	2. JDWP - defines format and communication protocol between the debug VM and debugger API/UI.
-	3. JDI - provides high level API to implement debugger applications.
+1. ***JVM TI*** - defines services that a JVM provides for debugging.
+2. ***JDWP*** - defines format and communication protocol between the debug VM and debugger API/UI.
+3. ***JDI*** - provides high level API to implement debugger applications.
 
 ### Enabling Debug mode
 The debuggee JVM must be start with the below option
