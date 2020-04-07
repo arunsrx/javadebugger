@@ -7,13 +7,16 @@ import java.util.Map;
 import com.debugger.event.visitable.IVisitableJDIEvent;
 import com.debugger.event.visitable.VisitableBreakPointEvent;
 import com.debugger.event.visitable.VisitableClassPrepareEvent;
+import com.debugger.event.visitable.VisitableStepEvent;
 import com.debugger.event.visitor.BreakPointVisitor;
 import com.debugger.event.visitor.ClassPrepareVisitor;
 import com.debugger.event.visitor.IJDIEventVisitor;
+import com.debugger.event.visitor.StepVisitor;
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.event.BreakpointEvent;
 import com.sun.jdi.event.ClassPrepareEvent;
 import com.sun.jdi.event.Event;
+import com.sun.jdi.event.StepEvent;
 
 public class StaticDebuggerUtil {
     /**
@@ -44,9 +47,11 @@ public class StaticDebuggerUtil {
     static {
         jdiEventToVisitableMapper.put(BreakpointEvent.class, VisitableBreakPointEvent.class);
         jdiEventToVisitableMapper.put(ClassPrepareEvent.class, VisitableClassPrepareEvent.class);
+        jdiEventToVisitableMapper.put(StepEvent.class, VisitableStepEvent.class);
 
         visitableToVisitorMapper.put(VisitableBreakPointEvent.class, BreakPointVisitor.class);
         visitableToVisitorMapper.put(VisitableClassPrepareEvent.class, ClassPrepareVisitor.class);
+        visitableToVisitorMapper.put(VisitableStepEvent.class, StepVisitor.class);
     }
 
     /**

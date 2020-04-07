@@ -3,6 +3,7 @@ package com.debugger.requests.requestor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.debugger.requests.IJdiEventRequestor;
 import com.sun.jdi.AbsentInformationException;
@@ -41,6 +42,8 @@ public class BreakPointRequestor implements IJdiEventRequestor {
      */
     private int lineNo;
 
+    private boolean isRemoveBreakPoint;
+
     public BreakPointRequestor() {
 
     }
@@ -55,8 +58,42 @@ public class BreakPointRequestor implements IJdiEventRequestor {
         this.lineNo = lineNo;
     }
 
+    /**
+     * 
+     * @param className
+     * @param lineNo
+     */
+    public BreakPointRequestor(String className, int lineNo, boolean isRemoveBreakPoint) {
+        this.className = className;
+        this.lineNo = lineNo;
+        this.isRemoveBreakPoint = isRemoveBreakPoint;
+    }
+
     @Override
     public void eventRequest(VirtualMachine vm) {
+        if (isRemoveBreakPoint) {
+            System.out.println("************ ********** Removing breakpoint " + lineNo);
+            List<BreakpointRequest> delBRList = vm.eventRequestManager().breakpointRequests().stream()
+                    .filter(bpr -> (bpr.location().lineNumber() == lineNo)).collect(Collectors.toList());
+            vm.eventRequestManager().deleteEventRequests(delBRList);
+
+            List<Integer> lineList = setBreakpoints.get(className);
+            if (lineList != null && lineList.contains(Integer.valueOf(lineNo))) {
+                lineList.remove(Integer.valueOf(lineNo));
+                setBreakpoints.put(className, lineList);
+            }
+            
+            List<Integer> lineList1 = deferredBreakpoints.get(className);
+            if(lineList1 != null && lineList1.contains(Integer.valueOf(lineNo))) {
+                lineList1.remove(Integer.valueOf(lineNo));
+                deferredBreakpoints.put(className, lineList1);
+            }
+        } else {
+            setBreakPointRequest(vm);
+        }
+    }
+
+    private void setBreakPointRequest(VirtualMachine vm) {
 
         Location location1 = null;
         List<Integer> breakpointlist = setBreakpoints.getOrDefault(className, new ArrayList<Integer>());
@@ -98,9 +135,8 @@ public class BreakPointRequestor implements IJdiEventRequestor {
                 System.out.println("break point requestor =============  breakpoint added @ " + lineNo + " -- "
                         + location1.toString());
                 BreakpointRequest bpReq1 = vm.eventRequestManager().createBreakpointRequest(location1);
-                /*
-                 * if(lineNo ==21) { bpReq1.setSuspendPolicy(BreakpointRequest.SUSPEND_ALL); }
-                 */
+                bpReq1.setSuspendPolicy(BreakpointRequest.SUSPEND_EVENT_THREAD);
+
                 bpReq1.enable();
 
                 breakpointlist.add(lineNo);
