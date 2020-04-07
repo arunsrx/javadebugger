@@ -1,23 +1,23 @@
 # Java debugger using Java Debugging Interface (javadebugger)
 ## Java Platform Debugger Architecture (JDPA) Overview
 JDPA provides tools to developers to easily create debugger applications.  JDPA consists of three layers.
-	1. JVM TI - defines services that a JVM provides for debugging.
-	2. JDWP - defines format and communication protocol between the debug VM and debugger API/UI.
-	3. JDI - provides high level API to implement debugger applications.
+1. ***JVM TI*** - defines services that a JVM provides for debugging.
+2. ***JDWP*** - defines format and communication protocol between the debug VM and debugger API/UI.
+3. ***JDI*** - provides high level API to implement debugger applications.
 
 ### Enabling Debug mode
 The debuggee JVM must be start with the below option
 
 ***-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=some valid port number***
 
-***Xdebug*** -> argument enables debugging of the VM
-***agentlib***  -> configures the JDWP protocol (communication protocol b/w debugger and debuggee)
-***transport*** -> defines the transport mechanism.  There are basically 2 types of transport mechanism.
-			1. *dt_socket* -> uses a socket interface
-			2. *dt_shmem* -> both the debugger and debuggee will share the same memory.
-***server*** -> ("n" or "y") If "y," listen for a debugger application to attach; otherwise, attach to the debugger application at the specified address.
-***suspend*** -> should the debuggee suspend its start and wait for debugger to attach or not.  “y” means the debuggee will wait for the debugger to connect. “n” indicates the debuggee can proceed and the debugger will attach at a later point.  If "y," JVM suspends the execution until a debugger connects to the debuggee JVM.
-***address*** -> port number to connect to for the debugger.
+1. Xdebug argument enables debugging of the VM.
+2. agentlib  configures the JDWP protocol (communication protocol b/w debugger and debuggee).
+3. transport  defines the transport mechanism.  There are basically 2 types of transport mechanism.
+    1. *dt_socket*  uses a socket interface.
+    2. *dt_shmem*  both the debugger and debuggee will share the same memory.
+4. server  ("n" or "y") If "y," listen for a debugger application to attach; otherwise, attach to the debugger application at the specified address.
+5. suspend  should the debuggee suspend its start and wait for debugger to attach or not.  “y” means the debuggee will wait for the debugger to connect. “n” indicates the debuggee can proceed and the debugger will attach at a later point.  If "y," JVM suspends the execution until a debugger connects to the debuggee JVM.
+6. address  port number to connect to for the debugger.
 
 A debugger can connect to the debuggee via three different ways or connectors
 1. **attaching connector** - the debugger attach to an already running debuggee VM.
