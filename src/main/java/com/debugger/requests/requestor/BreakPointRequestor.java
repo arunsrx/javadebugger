@@ -82,9 +82,9 @@ public class BreakPointRequestor implements IJdiEventRequestor {
                 lineList.remove(Integer.valueOf(lineNo));
                 setBreakpoints.put(className, lineList);
             }
-            
+
             List<Integer> lineList1 = deferredBreakpoints.get(className);
-            if(lineList1 != null && lineList1.contains(Integer.valueOf(lineNo))) {
+            if (lineList1 != null && lineList1.contains(Integer.valueOf(lineNo))) {
                 lineList1.remove(Integer.valueOf(lineNo));
                 deferredBreakpoints.put(className, lineList1);
             }
