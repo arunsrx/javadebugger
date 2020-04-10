@@ -92,7 +92,6 @@ public class StaticDebuggerUtil {
 
             return constructor.newInstance();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException(e);
         }
     }

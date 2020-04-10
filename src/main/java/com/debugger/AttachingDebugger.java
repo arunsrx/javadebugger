@@ -42,7 +42,6 @@ public class AttachingDebugger {
                     .orElseThrow(() -> new RuntimeException("unable to locate socket attaching connector"));
 
             // provide the hostname and port for the attaching connector to connect to...
-            // TODO: need to externalize hostname and port number.
             Map<String, Connector.Argument> env = aconnector.defaultArguments();
             env.get(HOSTNAME).setValue(hostname);
             env.get(PORT).setValue(port);
