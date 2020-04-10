@@ -18,6 +18,9 @@ import com.sun.jdi.event.ClassPrepareEvent;
 import com.sun.jdi.event.Event;
 import com.sun.jdi.event.StepEvent;
 
+/**
+ * Utility class providing some useful methods.
+ */
 public class StaticDebuggerUtil {
     /**
      * Virtual machine instance to which we are debugging. This is basically the
@@ -26,16 +29,18 @@ public class StaticDebuggerUtil {
     private static VirtualMachine vm = null;
 
     /**
-     * 
-     * @param virtualMac
+     * Set the {@link VirtualMachine}
+     *
+     * @param virtualMac {@link VirtualMachine}
      */
     public static void setVm(VirtualMachine virtualMac) {
         vm = virtualMac;
     }
 
     /**
-     * 
-     * @return
+     * Get the {@link VirtualMachine}
+     *
+     * @return {@link VirtualMachine}
      */
     public static VirtualMachine getVm() {
         return vm;
@@ -56,9 +61,9 @@ public class StaticDebuggerUtil {
 
     /**
      * Given a JDI event this method will return an appropriate Visitable Event
-     * 
-     * @param event
-     * @return
+     *
+     * @param event {@link Event}
+     * @return {@link IVisitableJDIEvent}
      */
     public static IVisitableJDIEvent getVisitableEvent(Event event) {
         try {
@@ -68,7 +73,6 @@ public class StaticDebuggerUtil {
 
             return constructor.newInstance(event);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException(e);
         }
     }
@@ -76,9 +80,9 @@ public class StaticDebuggerUtil {
     /**
      * Given a Visitable event this method will return an appropriate/corresponding
      * Visitor for this visitable Event
-     * 
-     * @param event
-     * @return
+     *
+     * @param event {@link IVisitableJDIEvent}
+     * @return {@link IJDIEventVisitor}
      */
     public static IJDIEventVisitor getVisitor(IVisitableJDIEvent event) {
         try {

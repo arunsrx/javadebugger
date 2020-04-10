@@ -6,14 +6,22 @@ import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.request.StepRequest;
 
 /**
- * 
- * @author arunkumar
+ * Class responsible for creating step requests.
  *
+ * @author arunkumar
  */
 public class StepRequestor implements IJdiEventRequestor {
 
+    /**
+     * {@link ThreadReference} instance
+     */
     private ThreadReference threadRef;
 
+    /**
+     * Default constructor
+     *
+     * @param threadRef
+     */
     public StepRequestor(ThreadReference threadRef) {
         this.threadRef = threadRef;
     }

@@ -34,9 +34,8 @@ import com.sun.jdi.request.StepRequest;
 
 /**
  * An attaching custom debugger which uses the java debug interface APIs
- * 
- * @author arun
  *
+ * @author arun
  */
 public class JavaCustomDebugger {
 
@@ -167,7 +166,6 @@ public class JavaCustomDebugger {
     }
 
     /**
-     * 
      * @param event
      * @throws IncompatibleThreadStateException
      * @throws AbsentInformationException

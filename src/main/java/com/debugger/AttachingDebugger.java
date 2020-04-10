@@ -17,11 +17,21 @@ import com.sun.jdi.event.VMDeathEvent;
 import com.sun.jdi.event.VMDisconnectEvent;
 import com.sun.jdi.event.VMStartEvent;
 
+/**
+ * Class providing some basic debugging fuctionality.
+ */
 public class AttachingDebugger {
     private static final String SOCKET_ATTACH = "com.sun.jdi.SocketAttach";
     private static final String HOSTNAME = "hostname";
     private static final String PORT = "port";
 
+    /**
+     * Attach to the debuggee VM.
+     *
+     * @param hostname debuggee VM host/server name.
+     * @param port     debuggee VM host port
+     * @return {@link VirtualMachine}
+     */
     public static VirtualMachine attachToVM(String hostname, String port) {
         VirtualMachine vm = null;
         try {
@@ -50,7 +60,10 @@ public class AttachingDebugger {
         }
         return vm;
     }
-    
+
+    /**
+     * Method which handles JDI Events
+     */
     public static void processEvents() {
         try {
             VirtualMachine vm = StaticDebuggerUtil.getVm();
@@ -86,7 +99,13 @@ public class AttachingDebugger {
             System.out.println(ex);
         }
     }
-    
+
+    /**
+     * Add break point on specified class and line
+     *
+     * @param className class name on which break point has to be set.
+     * @param lineno    line number from which break point has to be set.
+     */
     public static void addBreakPoint(String className, int lineno) {
 
         BreakPointRequestor bpr = new BreakPointRequestor(className, lineno);
@@ -95,6 +114,12 @@ public class AttachingDebugger {
 
     }
 
+    /**
+     * Remove breakpoint from specified line and class
+     *
+     * @param className class name on which break point has to be removed.
+     * @param lineno    line number from which break point has to be removed.
+     */
     public static void removeBreakPoint(String className, int lineno) {
         BreakPointRequestor bpr = new BreakPointRequestor(className, lineno, true);
         bpr.eventRequest(StaticDebuggerUtil.getVm());

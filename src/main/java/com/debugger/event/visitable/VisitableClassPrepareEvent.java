@@ -4,16 +4,20 @@ import com.debugger.event.visitor.IJDIEventVisitor;
 import com.sun.jdi.event.ClassPrepareEvent;
 
 /**
- * 
- * @author arunkumar
+ * Class for handling JDI ClassPrepareEvent and forwarding the same Event to ClassPrepareVisitor for proper handling.
  *
+ * @author arunkumar
  */
 public class VisitableClassPrepareEvent implements IVisitableJDIEvent {
 
+    /**
+     * {@link ClassPrepareEvent}
+     */
     private ClassPrepareEvent event;
 
     /**
-     * 
+     * Default Constructor
+     *
      * @param event
      */
     public VisitableClassPrepareEvent(ClassPrepareEvent event) {
@@ -23,7 +27,6 @@ public class VisitableClassPrepareEvent implements IVisitableJDIEvent {
     @Override
     public void accept(IJDIEventVisitor evtVisitor) {
         evtVisitor.visit(event);
-
     }
 
 }

@@ -3,9 +3,9 @@ package com.debugger.event.visitor;
 import com.sun.jdi.event.BreakpointEvent;
 
 /**
- * 
- * @author arunkumar
+ * Class capable of handling and processing JDI BreakpointEvent.
  *
+ * @author arunkumar
  */
 public class BreakPointVisitor extends DefaultJDIEventVisitor {
 

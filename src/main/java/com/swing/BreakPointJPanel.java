@@ -22,8 +22,10 @@ import javax.swing.JTextField;
 import com.debugger.AttachingDebugger;
 
 /**
- * This program demonstrates how to use JPanel in Swing.
- * 
+ * This JPanel allows user the provision to specify a class on which breakpoint needs to be set.
+ * The line number to set the breakpoint on.
+ * This UI component allows user to set or remove breakpoint.
+ *
  * @author arunkumar
  */
 public class BreakPointJPanel extends JFrame implements ActionListener {
@@ -106,26 +108,23 @@ public class BreakPointJPanel extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
     }
 
-    public static void main(String[] args) {
-        BreakPointJPanel demo = new BreakPointJPanel();
-        demo.setVisible(true);
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Coding Part of LOGIN button
+        // action when set button is invoked or pressed
         if (e.getSource() == buttonSetBreakPoint) {
             setBreakPoint();
         }
-        // Coding Part of cancel button
+        // action when remove button is invoked or pressed
         if (e.getSource() == buttonRemoveBreakPoint) {
             removeBreakPoint();
             // dispose();
         }
     }
 
+    /**
+     * Setup listeners on the buttons.
+     */
     private void setUpListeners() {
-
         buttonSetBreakPoint.addKeyListener(new KeyAdapter() {
 
             @Override
@@ -135,12 +134,13 @@ public class BreakPointJPanel extends JFrame implements ActionListener {
                 }
             }
         });
-
         buttonSetBreakPoint.addActionListener(this);
-
         buttonRemoveBreakPoint.addActionListener(this);
     }
 
+    /**
+     * Method which does the actual setting of break point by invoking the backend code.
+     */
     private void setBreakPoint() {
         String className;
         String lineNo;
@@ -148,8 +148,6 @@ public class BreakPointJPanel extends JFrame implements ActionListener {
         lineNo = textClasslineno.getText();
         if (className != null && lineNo != null && !className.isEmpty() && !lineNo.isEmpty()) {
             try {
-                // AttachingDebugger debugger = new AttachingDebugger();
-
                 AttachingDebugger.addBreakPoint(className, Integer.parseInt(lineNo));
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -166,6 +164,9 @@ public class BreakPointJPanel extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Method which does the actual removing of break point by invoking the backend code.
+     */
     private void removeBreakPoint() {
         String className;
         String lineNo;

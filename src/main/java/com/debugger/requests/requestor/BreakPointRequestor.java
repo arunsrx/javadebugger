@@ -15,10 +15,9 @@ import com.sun.jdi.request.BreakpointRequest;
 import com.sun.jdi.request.ClassPrepareRequest;
 
 /**
- * Class responsible for added breakpoints as requested/needed by the user.
- * 
- * @author arunkumar
+ * Class responsible for creating set or remove breakpoint requests.
  *
+ * @author arunkumar
  */
 public class BreakPointRequestor implements IJdiEventRequestor {
 
@@ -42,16 +41,24 @@ public class BreakPointRequestor implements IJdiEventRequestor {
      */
     private int lineNo;
 
+    /**
+     * flag to indicate if the breakpoint has to be removed or not.
+     * Set true if breakpoint has to be removed.
+     */
     private boolean isRemoveBreakPoint;
 
+    /**
+     * Default Constructor
+     */
     public BreakPointRequestor() {
 
     }
 
     /**
-     * 
-     * @param className
-     * @param lineNo
+     * Constructor to be used for setting breakpoints.
+     *
+     * @param className class on which breakpoint needs to be set.
+     * @param lineNo    line number on which breakpoint needs to be set.
      */
     public BreakPointRequestor(String className, int lineNo) {
         this.className = className;
@@ -59,9 +66,12 @@ public class BreakPointRequestor implements IJdiEventRequestor {
     }
 
     /**
-     * 
-     * @param className
-     * @param lineNo
+     * Constructor to be used for removing breakpoints.
+     *
+     * @param className          class on which breakpoint needs to be set.
+     * @param lineNo             line number on which breakpoint needs to be set.
+     * @param isRemoveBreakPoint flag to indicate if the breakpoint has to be removed or not.
+     *                           Set true if breakpoint has to be removed.
      */
     public BreakPointRequestor(String className, int lineNo, boolean isRemoveBreakPoint) {
         this.className = className;
@@ -93,6 +103,11 @@ public class BreakPointRequestor implements IJdiEventRequestor {
         }
     }
 
+    /**
+     * set breakpoint method
+     *
+     * @param vm {@link VirtualMachine}
+     */
     private void setBreakPointRequest(VirtualMachine vm) {
 
         Location location1 = null;

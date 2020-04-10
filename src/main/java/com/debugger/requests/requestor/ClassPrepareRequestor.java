@@ -9,14 +9,13 @@ import com.sun.jdi.request.ClassPrepareRequest;
 /**
  * Class responsible for creating class prepare requests so that appropriate
  * actions can be taken on class loading.
- * 
- * @author arunkumar
  *
+ * @author arunkumar
  */
 public class ClassPrepareRequestor implements IJdiEventRequestor {
 
     // exclude some default packages
-    private final static String[] EXCLUDE_LIST = { "sun.*", "com.sun.*" };
+    private final static String[] EXCLUDE_LIST = {"sun.*", "com.sun.*"};
 
     @Override
     public void eventRequest(VirtualMachine vm) {

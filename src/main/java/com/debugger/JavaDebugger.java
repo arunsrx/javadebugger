@@ -23,9 +23,8 @@ import com.sun.jdi.event.VMStartEvent;
 /**
  * An attaching custom debugger which uses the java debug interface APIs
  * Debugger driver code.
- * 
- * @author arun
  *
+ * @author arun
  */
 public class JavaDebugger {
 
@@ -128,7 +127,6 @@ public class JavaDebugger {
     }
 
     /**
-     * 
      * @return
      */
     private static BreakPointVisitor addBreakPointVisitor() {
@@ -136,7 +134,6 @@ public class JavaDebugger {
     }
 
     /**
-     * 
      * @param className
      * @param lineno
      * @param vm

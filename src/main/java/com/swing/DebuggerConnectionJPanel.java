@@ -20,8 +20,10 @@ import com.debugger.AttachingDebugger;
 import com.sun.jdi.VirtualMachine;
 
 /**
- * This program demonstrates how to use JPanel in Swing.
- * 
+ * Main class of the Debugger project.
+ * This JPanel allows user the specify a host/server name on which the program to be debugged is running.
+ * also allows user to specify port number fo the debugged program.
+ *
  * @author arunkumar
  */
 public class DebuggerConnectionJPanel extends JFrame implements ActionListener {
@@ -86,13 +88,17 @@ public class DebuggerConnectionJPanel extends JFrame implements ActionListener {
      * look and feel try {
      * UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch
      * (Exception ex) { ex.printStackTrace(); }
-     * 
+     *
      * SwingUtilities.invokeLater(new Runnable() {
-     * 
+     *
      * @Override public void run() { new
      *           DebuggerConnectionJPanel().setVisible(true); } }); }
      */
-
+    /**
+     * Main entry class of debugger program.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         DebuggerConnectionJPanel demo = new DebuggerConnectionJPanel();
         demo.setVisible(true);
@@ -110,10 +116,11 @@ public class DebuggerConnectionJPanel extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Setup listeners on the buttons.
+     */
     private void setUpListeners() {
-
         buttonConnect.addKeyListener(new KeyAdapter() {
-
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -123,7 +130,6 @@ public class DebuggerConnectionJPanel extends JFrame implements ActionListener {
         });
 
         textServerport.addKeyListener(new KeyAdapter() {
-
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -131,12 +137,13 @@ public class DebuggerConnectionJPanel extends JFrame implements ActionListener {
                 }
             }
         });
-
         buttonConnect.addActionListener(this);
-
         buttonCancel.addActionListener(this);
     }
 
+    /**
+     * connect to the debuggee VM
+     */
     private void connect() {
         String serverName;
         String serverPort;

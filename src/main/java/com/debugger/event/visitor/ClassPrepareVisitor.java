@@ -12,9 +12,9 @@ import com.sun.jdi.ClassType;
 import com.sun.jdi.event.ClassPrepareEvent;
 
 /**
- * 
- * @author arunkumar
+ * Class capable of handling and processing JDI ClassPrepareEvent.
  *
+ * @author arunkumar
  */
 public class ClassPrepareVisitor extends DefaultJDIEventVisitor {
 

@@ -4,15 +4,14 @@ import com.sun.jdi.VirtualMachine;
 
 /**
  * Interface which allows different type of JDI requests to be created
- * 
- * @author arunkumar
  *
+ * @author arunkumar
  */
 public interface IJdiEventRequestor {
 
     /**
      * method to create different JDI request
-     * 
+     *
      * @param vm {@link VirtualMachine} through which events have to be created for
      *           the vm.
      */
