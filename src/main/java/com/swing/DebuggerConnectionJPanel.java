@@ -8,13 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import com.debugger.AttachingDebugger;
 import com.sun.jdi.VirtualMachine;
@@ -84,20 +78,21 @@ public class DebuggerConnectionJPanel extends JFrame implements ActionListener {
     }
 
     /**
-     * public static void main(String[] args) { // set look and feel to the system
-     * look and feel try {
-     * UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch
-     * (Exception ex) { ex.printStackTrace(); }
-     *
-     * SwingUtilities.invokeLater(new Runnable() {
-     *
-     * @Override public void run() { new
-     *           DebuggerConnectionJPanel().setVisible(true); } }); }
+      public static void main(String[] args) { // set look and feel to the system
+         SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                  new
+                          DebuggerConnectionJPanel().setVisible(true);
+              }
+          });
+      }
      */
+
     /**
      * Main entry class of debugger program.
      *
-     * @param args
+     * @param
      */
     public static void main(String[] args) {
         DebuggerConnectionJPanel demo = new DebuggerConnectionJPanel();
@@ -162,15 +157,13 @@ public class DebuggerConnectionJPanel extends JFrame implements ActionListener {
                 } else {
                     this.dispose();
                     BreakPointJPanel breakPointJPanel = new BreakPointJPanel();
+                    breakPointJPanel.setVisible(true);
                     Runnable runnable = () -> {
                         System.out.println("Spawning JDI event listener thread.");
                         AttachingDebugger.processEvents();
                         breakPointJPanel.dispose();
                     };
                     new Thread(runnable).start();
-
-                    breakPointJPanel.setVisible(true);
-
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
